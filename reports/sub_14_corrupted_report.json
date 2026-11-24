@@ -1,11 +1,12 @@
 {
   "document_id": "sub_14_corrupted.pdf",
-  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_14_corrupted.pdf",
+  "file_path": "sub_14_corrupted.pdf",
   "modality": "pdf",
   "status": "error",
   "total_integrity_risk": "UNPROCESSED",
   "scores": {
     "peer_similarity_percentage": 0.0,
+    "multimodal_similarity_percentage": 0.0,
     "external_similarity_percentage": 0.0,
     "ai_generated_probability": 0.0
   },
@@ -13,7 +14,8 @@
   "peer_matches": [],
   "multimodal_matches": [],
   "external_matches": [],
-  "explanations": [
+  "explanations": "Document flagged as ERROR: PDF file is empty (0 bytes): sub_14_corrupted.pdf",
+  "explanation_details": [
     "Document flagged as ERROR: PDF file is empty (0 bytes): sub_14_corrupted.pdf"
   ]
 }

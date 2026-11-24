@@ -1,11 +1,12 @@
 {
   "document_id": "sub_13_ai_gen.docx",
-  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_13_ai_gen.docx",
+  "file_path": "sub_13_ai_gen.docx",
   "modality": "docx",
   "status": "ok",
   "total_integrity_risk": "HIGH",
   "scores": {
     "peer_similarity_percentage": 0.0,
+    "multimodal_similarity_percentage": 0.0,
     "external_similarity_percentage": 0.0,
     "ai_generated_probability": 95.0
   },
@@ -13,7 +14,8 @@
   "peer_matches": [],
   "multimodal_matches": [],
   "external_matches": [],
-  "explanations": [
+  "explanations": "High AI generation probability (95.0%): Exhibits formulaic transition patterns and uniform syntactic sentence structure.",
+  "explanation_details": [
     "High AI generation probability (95.0%): Exhibits formulaic transition patterns and uniform syntactic sentence structure."
   ]
 }

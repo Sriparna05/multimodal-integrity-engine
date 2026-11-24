@@ -1,11 +1,12 @@
 {
   "document_id": "sub_02_orig.docx",
-  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_02_orig.docx",
+  "file_path": "sub_02_orig.docx",
   "modality": "docx",
   "status": "ok",
   "total_integrity_risk": "LOW",
   "scores": {
     "peer_similarity_percentage": 0.0,
+    "multimodal_similarity_percentage": 0.0,
     "external_similarity_percentage": 0.0,
     "ai_generated_probability": 10.0
   },
@@ -13,7 +14,8 @@
   "peer_matches": [],
   "multimodal_matches": [],
   "external_matches": [],
-  "explanations": [
+  "explanations": "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores.",
+  "explanation_details": [
     "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores."
   ]
 }

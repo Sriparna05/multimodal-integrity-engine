@@ -66,6 +66,7 @@
     "expected_peer_sources": [
       "sub_07_copy_dup.docx"
     ],
+    "expected_peer_chunk_count": 2,
     "expected_multimodal_match": false,
     "expected_external_match": false,
     "expected_ai_generated": false,
@@ -80,6 +81,7 @@
     "expected_peer_sources": [
       "sub_06_copy_src.pdf"
     ],
+    "expected_peer_chunk_count": 2,
     "expected_multimodal_match": false,
     "expected_external_match": false,
     "expected_ai_generated": false,
@@ -94,6 +96,7 @@
     "expected_peer_sources": [
       "sub_09_para_dup.docx"
     ],
+    "expected_peer_chunk_count": 2,
     "expected_multimodal_match": false,
     "expected_external_match": false,
     "expected_ai_generated": false,
@@ -108,6 +111,7 @@
     "expected_peer_sources": [
       "sub_08_para_src.docx"
     ],
+    "expected_peer_chunk_count": 2,
     "expected_multimodal_match": false,
     "expected_external_match": false,
     "expected_ai_generated": false,
@@ -186,5 +190,17 @@
     "is_corrupted_or_empty": true,
     "has_shared_boilerplate": false,
     "notes": "Silent 5-second video submission with no audio track."
+  },
+  {
+    "filename": "sub_16_ai_natural.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": true,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Marker-free ~350-word natural-sounding LLM business analysis avoiding clich\u00e9 transition phrases to test RoBERTa vs heuristic blending."
   }
 ]

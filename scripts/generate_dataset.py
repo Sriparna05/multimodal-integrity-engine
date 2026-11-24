@@ -564,6 +564,31 @@ async def generate_all_submissions() -> None:
     render_silent_video(SAMPLE_DIR / "sub_15_silent_video.mp4", duration_sec=5)
 
     # -------------------------------------------------------------
+    # sub_16_ai_natural.docx: Marker-free natural LLM business analysis (~350 words)
+    # -------------------------------------------------------------
+    build_docx(
+        SAMPLE_DIR / "sub_16_ai_natural.docx",
+        title="Evaluating Robotics-as-a-Service (RaaS) Unit Economics in Mid-Market Warehousing",
+        paragraphs=[
+            "Warehouse operators in the mid-market segment often hesitate to purchase autonomous mobile robots outright because upfront hardware outlays strain quarterly working capital. "
+            "Subscription-based Robotics-as-a-Service contracts remove that initial capital barrier by converting robotics deployment into a predictable monthly operating expense tied directly to throughput volume. "
+            "For robotics vendors, however, shifting from one-time equipment sales to recurring leases creates an immediate financing gap between component procurement and multi-year lease collection.",
+            "Closing this cash conversion gap depends on lowering field deployment friction and lengthening hardware payback durability. "
+            "Early RaaS providers underestimated the engineering hours needed to map dynamic warehouse aisles, calibrate safety sensors, and integrate fleet software with legacy warehouse management databases. "
+            "When site commissioning stretches past six weeks, installation labor quickly consumes the first year of gross subscription margin. "
+            "Vendors that standardize modular sensor kits and automate aisle mapping can reduce onboarding cycles below ten days, turning unit contribution margins positive before month fourteen.",
+            "Fleet uptime guarantees also shape long-term profitability under recurring service agreements. "
+            "Unlike traditional industrial machinery sold with limited warranties, leased warehouse robots require vendor-funded preventive maintenance, battery replacements, and remote telemetry support. "
+            "Predictive diagnostics built into edge motor controllers allow service teams to schedule component swaps during off-peak shifts rather than dispatching emergency field technicians after unexpected stoppages. "
+            "Keeping fleet availability above ninety-eight percent protects contract renewal rates while preventing punitive service-level credits.",
+            "Over a three-year contract horizon, secondary hardware redeployment determines whether a RaaS business compounds capital efficiently or stalls under depreciation weight. "
+            "Robots returned after an initial facility lease retain substantial mechanical value if core chassis frames and drive assemblies are engineered for rapid refurbishment. "
+            "Refurbishing and re-leasing second-cycle units to seasonal distribution centers raises lifetime asset return on invested capital without requiring fresh bill-of-materials spending. "
+            "Disciplined fleet financing, rapid commissioning, and multi-cycle asset utilization together separate durable RaaS platforms from hardware vendors merely discounting equipment through installment plans.",
+        ],
+    )
+
+    # -------------------------------------------------------------
     # dataset_manifest.json: Ground-truth dataset documentation
     # -------------------------------------------------------------
     manifest = [
@@ -632,6 +657,7 @@ async def generate_all_submissions() -> None:
             "file_type": "pdf",
             "expected_peer_plagiarism": True,
             "expected_peer_sources": ["sub_07_copy_dup.docx"],
+            "expected_peer_chunk_count": 2,
             "expected_multimodal_match": False,
             "expected_external_match": False,
             "expected_ai_generated": False,
@@ -644,6 +670,7 @@ async def generate_all_submissions() -> None:
             "file_type": "docx",
             "expected_peer_plagiarism": True,
             "expected_peer_sources": ["sub_06_copy_src.pdf"],
+            "expected_peer_chunk_count": 2,
             "expected_multimodal_match": False,
             "expected_external_match": False,
             "expected_ai_generated": False,
@@ -656,6 +683,7 @@ async def generate_all_submissions() -> None:
             "file_type": "docx",
             "expected_peer_plagiarism": True,
             "expected_peer_sources": ["sub_09_para_dup.docx"],
+            "expected_peer_chunk_count": 2,
             "expected_multimodal_match": False,
             "expected_external_match": False,
             "expected_ai_generated": False,
@@ -668,6 +696,7 @@ async def generate_all_submissions() -> None:
             "file_type": "docx",
             "expected_peer_plagiarism": True,
             "expected_peer_sources": ["sub_08_para_src.docx"],
+            "expected_peer_chunk_count": 2,
             "expected_multimodal_match": False,
             "expected_external_match": False,
             "expected_ai_generated": False,
@@ -746,6 +775,18 @@ async def generate_all_submissions() -> None:
             "is_corrupted_or_empty": True,
             "has_shared_boilerplate": False,
             "notes": "Silent 5-second video submission with no audio track.",
+        },
+        {
+            "filename": "sub_16_ai_natural.docx",
+            "file_type": "docx",
+            "expected_peer_plagiarism": False,
+            "expected_peer_sources": [],
+            "expected_multimodal_match": False,
+            "expected_external_match": False,
+            "expected_ai_generated": True,
+            "is_corrupted_or_empty": False,
+            "has_shared_boilerplate": False,
+            "notes": "Marker-free ~350-word natural-sounding LLM business analysis avoiding cliché transition phrases to test RoBERTa vs heuristic blending.",
         },
     ]
 

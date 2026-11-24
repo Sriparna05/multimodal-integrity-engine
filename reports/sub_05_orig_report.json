@@ -1,13 +1,14 @@
 {
   "document_id": "sub_05_orig.pdf",
-  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_05_orig.pdf",
+  "file_path": "sub_05_orig.pdf",
   "modality": "pdf",
   "status": "ok",
   "total_integrity_risk": "MEDIUM",
   "scores": {
     "peer_similarity_percentage": 0.0,
+    "multimodal_similarity_percentage": 0.0,
     "external_similarity_percentage": 33.3,
-    "ai_generated_probability": 36.0
+    "ai_generated_probability": 35.5
   },
   "boilerplate_chunks_discounted": 1,
   "peer_matches": [],
@@ -15,9 +16,9 @@
   "external_matches": [
     {
       "matched_file": "ev_battery_supply_chain.txt",
-      "similarity_score": 0.969,
-      "query_passage": "The critical path for next-generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery-grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed-loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-two supplier delivery bottlenecks.",
-      "matched_passage": "TITLE: Global Electric Vehicle Battery Supply Chain Resilience & Mineral Refining Economics SECTION 1: UPSTREAM EXTRACTION AND CHEMICAL CONVERSION The critical path for next-generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery-grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed-loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-two supplier delivery bottlenecks.",
+      "similarity_score": 0.964,
+      "query_passage": "The critical path for next generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-2 supplier delivery bottlenecks.",
+      "matched_passage": "TITLE: Global Electric Vehicle Battery Supply Chain Resilience & Mineral Refining Economics SECTION 1: UPSTREAM EXTRACTION AND CHEMICAL CONVERSION The critical path for next generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-2 supplier delivery bottlenecks.",
       "location": {
         "query_page": 1,
         "query_timestamp": null,
@@ -26,8 +27,9 @@
       }
     }
   ],
-  "explanations": [
+  "explanations": "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores. External corpus overlap detected with ev_battery_supply_chain.txt (1 chunk(s), peak similarity: 0.964).",
+  "explanation_details": [
     "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores.",
-    "External corpus overlap detected with ev_battery_supply_chain.txt (1 chunk(s), peak similarity: 0.969)."
+    "External corpus overlap detected with ev_battery_supply_chain.txt (1 chunk(s), peak similarity: 0.964)."
   ]
 }

@@ -1,6 +1,6 @@
 # System Evaluation & Benchmark Report
 
-This document reports the empirical benchmark evaluation of the Multimodal Submission Integrity & Plagiarism Detection Engine across 15 synthetic case-study submissions and 4 reference corpus documents.
+This document reports the empirical benchmark evaluation of the Multimodal Submission Integrity & Plagiarism Detection Engine across 16 synthetic case-study submissions (14 valid submissions plus 2 corrupted/silent edge cases) and 4 reference corpus documents.
 
 All metrics below are generated directly from the automated evaluation suite (`python scripts/evaluate.py`), comparing output reports against the ground-truth manifest (`sample_submissions/dataset_manifest.json`).
 
@@ -8,91 +8,102 @@ All metrics below are generated directly from the automated evaluation suite (`p
 
 ## 1. Benchmark Summary & Performance Metrics
 
-Evaluation covers all 13 valid submissions (excluding the two deliberately corrupted/silent edge cases, which are evaluated separately).
+Evaluation covers all 14 valid submissions (the two deliberately corrupted/silent edge cases are evaluated separately under Scenario 3).
 
 > [!NOTE]
-> **Engineering Disclaimer:** Achieving an F1-Score of 1.0000 across these 13 synthetic submissions reflects a tightly controlled end-to-end integration and sanity benchmark designed to validate algorithmic mechanics (bi-encoder semantic projection, cross-modal speech alignment, corpus-wide frequency filtering, and exception handling). It is **not** a claim of 100% real-world operational accuracy. In wild deployment, ambiguous student paraphrasing, optical character recognition artifacts, acoustic distortion, and nuanced disciplinary literature will inevitably introduce edge-case variance.
+> **Engineering Disclaimer:** The 1.0000 precision and recall scores on peer, chunk-level, and external plagiarism across these synthetic submissions reflect a controlled sanity benchmark designed to validate algorithmic mechanics (bi-encoder semantic projection, cross-modal alignment, boilerplate filtering, and exception handling). They are **not** a claim of 100% real-world operational accuracy. As shown honestly by our AI-detection results below, modern LLM prose and noisy real-world student documents create substantial variance outside controlled test cases.
 
-| Evaluation Task / Signal | Precision | Recall | F1-Score | Confusion Matrix (TP / FP / TN / FN) | Primary Ground-Truth Files |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Peer & Multimodal Plagiarism** | **1.0000** | **1.0000** | **1.0000** | TP=6, FP=0, TN=7, FN=0 | `sub_06`, `sub_07`, `sub_08`, `sub_09`, `sub_10`, `sub_11` |
-| **External Reference Overlap** | **1.0000** | **1.0000** | **1.0000** | TP=1, FP=0, TN=12, FN=0 | `sub_05` (matches `ev_battery_supply_chain.txt`) |
-| **AI Content Estimation (≥75%)** | **1.0000** | **1.0000** | **1.0000** | TP=1, FP=0, TN=12, FN=0 | `sub_13` (Synthetic LLM essay) |
-| **Overall Integrity Risk Flagging** | **1.0000** | **1.0000** | **1.0000** | TP=8, FP=0, TN=5, FN=0 | Medium/High Risk vs Clean Original |
+| Signal / Task | Precision | Recall | F1-Score | Counts / Confusion Matrix |
+| :--- | :---: | :---: | :---: | :--- |
+| **Peer & Multimodal Plagiarism (Doc-Level)** | **1.0000** | **1.0000** | **1.0000** | TP=6, FP=0, TN=8, FN=0 |
+| **Peer Text Plagiarism (Chunk-Level)** | **1.0000** | **1.0000** | **1.0000** | TP=8, FP=0, FN=0 |
+| **External Reference Match (Doc-Level)** | **1.0000** | **1.0000** | **1.0000** | TP=1, FP=0, TN=13, FN=0 |
+| **AI Content Estimation (>=75% HIGH)** | **1.0000** | **0.5000** | **0.6667** | TP=1, FP=0, TN=12, FN=1 |
+| **Overall Integrity Flagging (Doc-Level)** | **1.0000** | **0.8889** | **0.9412** | TP=8, FP=0, TN=5, FN=1 |
 
-### Scenario 2 Proof: Lexical (Jaccard) vs. Semantic (Cosine) Similarity
+### AI Content Estimation Breakdown (`max(RoBERTa, Heuristic)`)
 
-To test whether vector embeddings catch paraphrased plagiarism that bypasses traditional n-gram matching, we evaluated the paraphrased pair (`sub_08_para_src.docx` vs `sub_09_para_dup.docx`):
+Using `final_score = max(hf_score, heuristic_score)` with explicit `top_k=None` class-label parsing on `Hello-SimpleAI/chatgpt-detector-roberta`:
 
-- **Token-Level Jaccard Similarity**: `0.4697` (Low lexical overlap)
-- **Dense Vector Cosine Similarity (`all-MiniLM-L6-v2`)**: `0.8960` (High semantic equivalence)
+| Synthetic AI Submission | Style Profile | AI Prob (%) | Risk Level | Honest Observation |
+| :--- | :--- | :---: | :---: | :--- |
+| `sub_13_ai_gen.docx` | Formulaic clichés & uniform syntax | **`95.0%`** | **`HIGH`** | Heuristic scored `95.0%` and is no longer dragged down by legacy 2022 RoBERTa (`~0.1%`). |
+| `sub_16_ai_natural.docx` | ~350-word natural marker-free LLM prose | **`20.0%`** | **`LOW`** | Without cliché transition markers, both the heuristic (`20.0%`) and 2022 HC3-trained RoBERTa (`~0.04%`) rate this clean LLM prose as human. |
+
+Original human submissions remain safely below the `50%` MEDIUM threshold (`sub_01_orig.pdf = 41.8%`, `sub_05_orig.pdf = 35.5%`, others `10.0%–25.1%`), yielding zero false positives (`FP=0`). This demonstrates an honest operational reality: legacy zero-shot RoBERTa checkpoints trained on 2022 conversational Q&A generalize poorly to clean, modern business prose without domain-calibrated retraining.
+
+---
+
+## 2. Scenario 2 Proof: Lexical (Levenshtein & Jaccard) vs. Semantic Similarity
+
+To quantify why traditional lexical plagiarism checkers miss paraphrased submissions, we evaluated the paraphrased pair (`sub_08_para_src.docx` vs `sub_09_para_dup.docx`):
+
+| Similarity Metric | Score | Detection Outcome |
+| :--- | :---: | :--- |
+| **Levenshtein Similarity Ratio** | `0.6455` | Fails (`< 0.75`, low character-sequence overlap) |
+| **Token-Level Jaccard Similarity** | `0.4697` | Fails (`< 0.75`, low lexical word overlap) |
+| **Dense Vector Cosine (`all-MiniLM-L6-v2`)** | **`0.8990`** | **Passes cleanly (`>= 0.75`)** |
 
 ```
 [sub_08 Query Passage]:
-"However, shifting from an asset-light subscription revenue model to an embedded balance-sheet lending structure exposes enterprise software firms to severe macroeconomic interest rate volatility. Without sophisticated debt facility securitization and programmatic loan-loss reserve protocols, unexpected spikes in merchant delinquency can rapidly decimate operational cash reserves and undermine primary enterprise valuations."
+"However, shifting from an asset light subscription revenue model to an embedded balance sheet lending structure exposes enterprise software firms to severe macroeconomic interest rate volatility. Without sophisticated debt facility securitization and programmatic loan loss reserve protocols, unexpected spikes in merchant delinquency can rapidly decimate operational cash reserves and undermine primary enterprise valuations."
 
 [sub_09 Matched Passage]:
-"However, transitioning from an asset-light subscription model to balance-sheet loan origination exposes enterprise software companies to significant macroeconomic interest rate fluctuations. In the absence of structured credit facility securitization and automated loan loss reserve protocols, unexpected surges in merchant defaults can quickly deplete cash reserves and erode primary company valuations."
+"However, transitioning from an asset light subscription model to balance sheet loan origination exposes enterprise software companies to significant macroeconomic interest rate fluctuations. In the absence of structured credit facility securitization and automated loan loss reserve protocols, unexpected surges in merchant defaults can quickly deplete cash reserves and erode primary company valuations."
 ```
 
-Standard string-overlap tools fail here because words like "transitioning", "loan origination", "fluctuations", and "deplete" replace the original vocabulary. The bi-encoder projects both into adjacent coordinates in embedding space, returning a similarity of 0.896 and cleanly exceeding our 0.75 threshold.
+---
 
-### Scenario 3 Proof: Corrupted and Silent Files
-- `sub_14_corrupted.pdf` (0-byte file): Handled by `pdf_extractor.py`, logged as an empty PDF, and categorized as `UNPROCESSED` without crashing the pipeline.
-- `sub_15_silent_video.mp4` (5-second video with no audio track): Handled by `mp4_extractor.py`, detected missing audio stream, and categorized as `UNPROCESSED` with a clear warning.
+## 3. True-Negative Pairwise Similarity Distribution (Threshold Margin Proof)
 
-### Scenario 4 Proof: Boilerplate Header Neutralization
-- 5 separate submissions (`sub_01` to `sub_05`) carried the exact same 147-word competition rules header.
-- The engine's corpus-frequency filter flagged the block across all 5 files, discounted 1 chunk from each, and prevented false-positive peer plagiarism flags among the original submissions (`sub_01` through `sub_04` remained at `0.0%` peer similarity, `LOW` risk).
+To verify that our `0.75` text-to-text threshold and `0.70` multimodal threshold maintain safe headroom against false positives, we measured the maximum chunk-level cosine similarity across all **88 unrelated (true-negative) document pairs** in the valid cohort (excluding shared boilerplate chunks and the 3 ground-truth positive pairs):
+
+| Pair Category | Pair Count | Min Max-Sim | Mean Max-Sim | Max Max-Sim | Margin to Threshold |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **All Unrelated TN Pairs** | `88` | `0.1328` | `0.3332` | `0.5920` | — |
+| **Text-to-Text TN Pairs** (vs `0.75`) | `64` | `0.1328` | `0.3512` | `0.5920` | **`+0.1580`** |
+| **Multimodal MP4 TN Pairs** (vs `0.70`) | `24` | `0.1429` | `0.2854` | `0.5729` | **`+0.1271`** |
+
+- **Highest Unrelated Pair Observed:** `sub_01_orig.pdf` vs `sub_08_para_src.docx` (`0.5920` — both discuss B2B SaaS business models, yet remain `0.158` below our `0.75` text plagiarism threshold).
 
 ---
 
-## 2. Failure & Ambiguity Analysis
+## 4. Scenario 1, 3 & 4 Verification
 
-Here are three concrete failure modes and edge cases observed during development and testing:
-
-### Case 1: ASR Transcription Drift on Domain Jargon
-- **Observation:** In `sub_11_pitch_video.mp4`, `faster-whisper` (`tiny.en`) transcribed financial jargon with phonetic substitutions:
-  - Text: *"pro forma"* → ASR: *"pro-former"*
-  - Text: *"Net working capital"* → ASR: *"Networking capital"*
-- **Why it still worked here:** Dense vector embeddings map phonetic mis-transcriptions relatively close in semantic space when surrounding context is strong. The chunk still scored `0.950` cosine similarity against `sub_10_pitch_src.pdf` (page 2).
-- **Where this breaks:** On recordings with heavy regional accents, background room noise, or low-cost laptop microphones, `tiny.en` often drops technical terminology entirely or hallucinates text. If "Net working capital" became "working software", similarity would drop below 0.75.
-- **Production Fix:**
-  1. Upgrade from `tiny.en` to `distil-whisper/distil-large-v3` or `medium.en` on GPU workers.
-  2. Use Whisper's `initial_prompt` parameter to bias decoding with common business and competition terms (e.g., `"EBITDA, CAC, LTV, pro forma, CapEx, BESS, SaaS"`).
-
-### Case 2: Elevated AI-Probability Scores on Short, Structured Business Prose
-- **Observation:** `sub_01_orig.pdf` scored `42.8%` and `sub_05_orig.pdf` scored `36.0%` on AI generation likelihood, despite being original human case studies.
-- **Root Cause:** MBA-style case writing uses formal transitions ("Furthermore", "To mitigate", "In conclusion") and maintains disciplined, relatively uniform sentence lengths. Statistical burstiness heuristics and zero-shot RoBERTa classifiers both assign non-trivial AI probabilities to structured, formal prose.
-- **Where this breaks:** If an institution sets an aggressive threshold (e.g., flagging anything over 40% as AI-generated), legitimate students who write concisely and formally will be falsely accused.
-- **Production Fix:**
-  1. Never flag a submission for disciplinary action based on an automated AI score alone.
-  2. Enforce a minimum text length requirement (e.g., 300+ words of non-boilerplate text) before computing AI scores.
-  3. Calibrate classifier decision thresholds against a verified baseline of domain-specific historical student papers rather than general-purpose web text.
-
-### Case 3: Boilerplate Filter Sensitivity to Reworded Prompts
-- **Observation:** The boilerplate filter requires a chunk to have cosine similarity ≥ 0.90 across at least 4 documents or ≥ 35% of the corpus.
-- **Where this breaks:**
-  1. If a cohort is small (e.g., only 3 students submit), or if fewer than 4 students include the prompt header, the automatic corpus frequency check will not fire.
-  2. If a student rewords or abbreviates the prompt header, similarity across peers drops below 0.90, causing the prompt to be treated as original student text and inflating peer plagiarism scores.
-- **Production Fix:** Add an optional CLI flag `--prompt_file ./templates/case_prompt.txt`. Chunks matching the organizer-provided prompt template at ≥ 0.85 similarity can be neutralized immediately without relying solely on cohort-wide statistical frequency.
+- **Scenario 1 (Cross-Modal Audio/Text Alignment):** Upgrading from `tiny.en` to `base.en` with a financial `initial_prompt` and spoken/written text normalization raised cosine similarity between `sub_10_pitch_src.pdf` (page 2) and `sub_11_pitch_video.mp4` (`00:00:00-00:00:26`) from `0.950` to **`0.971`**. Both submissions are flagged `HIGH` risk via our `>= 0.85` multimodal match gate.
+- **Scenario 3 (Corrupted & Silent Files):**
+  - `sub_14_corrupted.pdf` (0-byte file): Caught by `pdf_extractor.py`, logged as `ERROR`, categorized as `UNPROCESSED`.
+  - `sub_15_silent_video.mp4` (5-second video with no audio stream): Caught by `mp4_extractor.py`, logged as `WARNING`, categorized as `UNPROCESSED`.
+- **Scenario 4 (Boilerplate Neutralization):**
+  - `sub_01_orig` through `sub_05_orig` each carried the shared 147-word competition charter. All 5 had `1` boilerplate chunk discounted (`Peer Sim = 0.0%`, `0` false-positive peer flags).
 
 ---
 
-## 3. Engineering Trade-off Analysis
+## 5. Failure & Ambiguity Analysis
+
+### Case 1: Remaining ASR Phonetic Drift on Compound Finance Terms
+- **Observation:** Upgrading to `faster-whisper` (`base.en`) with domain `initial_prompt` and `normalize_spoken_written()` fixed `"pro forma"`, `"break even"`, `"month 18"`, and `"64%"`, lifting `sub_11_pitch_video.mp4` similarity to **`0.971`**. However, `base.en` still transcribed `"Net working capital"` as `"Networking capital"`.
+- **Where this breaks:** On noisy student recordings, heavy accents, or dense domain acronyms (e.g., `"EBITDA"`, `"LTV/CAC"`, `"BESS"`), small CPU Whisper models still introduce compound-word errors.
+- **Production Fix:** Run `distil-whisper/distil-large-v3` on GPU workers alongside cohort-specific glossary biasing via `initial_prompt`.
+
+### Case 2: Out-of-Distribution Failure on Modern Marker-Free LLM Prose
+- **Observation:** `Hello-SimpleAI/chatgpt-detector-roberta` was trained primarily on 2022–2023 conversational HC3 ChatGPT Q&A text. On clean business strategy prose, it predicted `'Human'` at `~99.9%` on both `sub_13_ai_gen.docx` (`ChatGPT=0.13%`) and `sub_16_ai_natural.docx` (`ChatGPT=0.04%`). Using `max(hf_score, heuristic_score)` lets our heuristic catch formulaic AI (`sub_13_ai_gen.docx = 95.0%`), while marker-free `sub_16_ai_natural.docx` still scores `20.0%` (`LOW`).
+- **Root Cause:** Zero-shot RoBERTa checkpoints experience severe domain and generation shift across model families and cannot reliably separate disciplined human consulting prose from clean modern LLM output.
+- **Production Fix:** Fine-tune an institution-calibrated classifier on recent domain submissions paired with frontier model generations, and treat AI estimation strictly as a non-punitive advisory triage metric.
+
+### Case 3: Boilerplate Detection in Small Cohorts or Paraphrased Prompts
+- **Observation:** Our fixed boilerplate filter excludes self-matches and requires matching at least `min_doc_count = max(2, min(4, ceil(N * 0.35)))` other documents, with a safety guard skipping any document if 100% of its chunks would be discounted.
+- **Where this breaks:** In tiny cohorts (`N <= 2`) boilerplate cannot be distinguished statistically from plagiarism; in larger cohorts, if a student slightly paraphrases the shared prompt header below `0.90` cosine similarity, it bypasses the filter.
+- **Production Fix:** Add an optional `--prompt_file` CLI flag allowing organizers to supply known template headers directly.
+
+---
+
+## 6. Engineering Trade-off Analysis
 
 ### Embedding Model: `sentence-transformers/all-MiniLM-L6-v2`
-- **Why we chose it:**
-  - **Memory & Size:** 22.7M parameters (~90 MB disk footprint, ~384-dimensional dense vectors). Runs fast on CPU without requiring an expensive GPU instance.
-  - **Inference Speed:** Encodes ~1,500 words in under 300ms on a standard laptop CPU.
-  - **Accuracy:** Sufficient semantic resolution for 80–120 word paragraphs, capturing paraphrasing (0.896 on `sub_08`/`sub_09`) and cross-modal alignment (0.950 on `sub_10`/`sub_11`).
-- **Rejected Alternatives:**
-  - `BAAI/bge-large-en-v1.5` or `text-embedding-3-large`: Larger models (1024-dim, >1.3 GB) provide slightly better MTEB retrieval scores, but increase embedding compute time by 6x and quadruple vector memory consumption without offering noticeable accuracy gains on paragraph-length case analyses.
+- **Why we chose it:** 22.7M parameters (~90 MB footprint, 384-dim dense vectors), encodes ~1,500 words in under 300ms on CPU, and separates paraphrased plagiarism (`0.8990`) cleanly from unrelated business prose (`max 0.5920`).
+- **Paragraph Chunk Size (~80–120 words):** `all-MiniLM-L6-v2` truncates inputs past **256 word-piece tokens** (~180–200 English words). Using 200–400 token chunks would silently drop trailing sentences and merge ~150-word prompt headers with student analysis; ~80–120 word paragraph-aware chunks prevent truncation loss and keep boilerplate isolated.
 
 ### Vector Search: `faiss.IndexFlatIP` vs. Approximate Nearest Neighbors (ANN)
-- **Why we chose it:**
-  - Our test cohort generates ~50 chunks across 15 documents. Even a tournament with 500 submissions yields ~7,500 chunks (~11.5 MB in RAM).
-  - On L2-normalized vectors, `IndexFlatIP` calculates exact cosine similarity with $O(N)$ dot products. At 7,500 chunks, an exhaustive search takes under 2 milliseconds on CPU.
-  - Using exact search eliminates ANN recall degradation and hyperparameter tuning (e.g., `nlist`, `nprobe`, `efSearch`).
-- **When to switch:**
-  - Only when scaling past 100,000 chunks (10,000+ submissions or multi-year cross-cohort archives) does ANN (`IndexHNSWFlat` or `IndexIVFFlat`) become necessary to maintain sub-20ms search latencies.
+- **Why we chose it:** At cohort scale (50 chunks now, or ~7,500 chunks for 500 submissions = ~11.5 MB RAM), exhaustive dot product (`IndexFlatIP` on L2-normalized vectors) runs in under 2ms on CPU with exact cosine recall and zero ANN tuning (`nlist`, `nprobe`, `efSearch`).
+- **When to switch:** Above ~100,000 chunks (10,000+ submissions or multi-year archives), move to HNSW (`Qdrant` / `Milvus`) or `IVF-PQ`.

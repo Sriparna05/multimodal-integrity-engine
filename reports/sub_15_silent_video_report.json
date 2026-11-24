@@ -1,11 +1,12 @@
 {
   "document_id": "sub_15_silent_video.mp4",
-  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_15_silent_video.mp4",
+  "file_path": "sub_15_silent_video.mp4",
   "modality": "mp4",
   "status": "warning",
   "total_integrity_risk": "UNPROCESSED",
   "scores": {
     "peer_similarity_percentage": 0.0,
+    "multimodal_similarity_percentage": 0.0,
     "external_similarity_percentage": 0.0,
     "ai_generated_probability": 0.0
   },
@@ -13,7 +14,8 @@
   "peer_matches": [],
   "multimodal_matches": [],
   "external_matches": [],
-  "explanations": [
+  "explanations": "Document flagged as WARNING: Video has no audio track or is completely silent: sub_15_silent_video.mp4",
+  "explanation_details": [
     "Document flagged as WARNING: Video has no audio track or is completely silent: sub_15_silent_video.mp4"
   ]
 }
