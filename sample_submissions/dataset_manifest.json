@@ -1,0 +1,190 @@
+[
+  {
+    "filename": "sub_01_orig.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": true,
+    "notes": "Original PDF submission on B2B SaaS pricing models with competition boilerplate header."
+  },
+  {
+    "filename": "sub_02_orig.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": true,
+    "notes": "Original DOCX submission on commercial fleet telematics with competition boilerplate header."
+  },
+  {
+    "filename": "sub_03_orig.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": true,
+    "notes": "Original PDF submission on offshore floating wind with competition boilerplate header."
+  },
+  {
+    "filename": "sub_04_orig.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": true,
+    "notes": "Original DOCX submission on healthcare AI diagnostics with competition boilerplate header."
+  },
+  {
+    "filename": "sub_05_orig.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": true,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": true,
+    "notes": "Contains competition boilerplate header and copies one full paragraph verbatim from reference_corpus/ev_battery_supply_chain.txt."
+  },
+  {
+    "filename": "sub_06_copy_src.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": true,
+    "expected_peer_sources": [
+      "sub_07_copy_dup.docx"
+    ],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Source PDF submission for verbatim peer plagiarism pair on semiconductor packaging economics."
+  },
+  {
+    "filename": "sub_07_copy_dup.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": true,
+    "expected_peer_sources": [
+      "sub_06_copy_src.pdf"
+    ],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Duplicate DOCX submission containing 2 paragraphs copied verbatim from sub_06_copy_src.pdf."
+  },
+  {
+    "filename": "sub_08_para_src.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": true,
+    "expected_peer_sources": [
+      "sub_09_para_dup.docx"
+    ],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Source DOCX submission for paraphrased pair on embedded lending in vertical SaaS."
+  },
+  {
+    "filename": "sub_09_para_dup.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": true,
+    "expected_peer_sources": [
+      "sub_08_para_src.docx"
+    ],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Paraphrased DOCX submission expressing the exact same 2-paragraph arguments as sub_08_para_src.docx with altered phrasing."
+  },
+  {
+    "filename": "sub_10_pitch_src.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": true,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Multi-page PDF containing a financial projection paragraph on page 2 that matches sub_11_pitch_video.mp4 spoken audio."
+  },
+  {
+    "filename": "sub_11_pitch_video.mp4",
+    "file_type": "mp4",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": true,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Video pitch reciting the exact financial analysis paragraph from page 2 of sub_10_pitch_src.pdf."
+  },
+  {
+    "filename": "sub_12_orig_video.mp4",
+    "file_type": "mp4",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Original video submission discussing autonomous freight logistics corridors."
+  },
+  {
+    "filename": "sub_13_ai_gen.docx",
+    "file_type": "docx",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": true,
+    "is_corrupted_or_empty": false,
+    "has_shared_boilerplate": false,
+    "notes": "Formulaic ~400-word essay with uniform syntax and repetitive transition phrases to test AI detection."
+  },
+  {
+    "filename": "sub_14_corrupted.pdf",
+    "file_type": "pdf",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": true,
+    "has_shared_boilerplate": false,
+    "notes": "Corrupted 0-byte PDF submission."
+  },
+  {
+    "filename": "sub_15_silent_video.mp4",
+    "file_type": "mp4",
+    "expected_peer_plagiarism": false,
+    "expected_peer_sources": [],
+    "expected_multimodal_match": false,
+    "expected_external_match": false,
+    "expected_ai_generated": false,
+    "is_corrupted_or_empty": true,
+    "has_shared_boilerplate": false,
+    "notes": "Silent 5-second video submission with no audio track."
+  }
+]

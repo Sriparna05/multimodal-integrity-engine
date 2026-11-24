@@ -1,0 +1,10 @@
+TITLE: Quick-Commerce Dark Store Unit Economics: Urban Density and Fulfillment Optimization
+
+SECTION 1: CATCHMENT AREA METRICS
+Ten-minute grocery delivery models rely on highly localized micro-fulfillment centers (dark stores) serving a tight radius of two to three kilometers. High order density is the paramount determinant of financial viability; dark stores must process at least eight hundred daily orders to amortize fixed rental overhead and cold-chain energy costs.
+
+SECTION 2: RIDER UTILIZATION AND INVENTORY PACKING
+Pick-and-pack times must be compressed to under two minutes through algorithmic SKU slotting and picker routing. Simultaneously, delivery rider batching algorithms aggregate proximate drops, raising rider efficiency from 1.6 to 2.8 deliveries per hour during evening demand peaks.
+
+SECTION 3: MARGIN EXPANSION VIA PRIVATE LABELS AND AD SALES
+FMCG brand advertising and high-margin private label staples provide the necessary gross margin expansion to offset last-mile delivery subsidies. Reaching store-level EBITDA break-even requires maintaining gross product margins above twenty-one percent alongside minimum order values exceeding twelve dollars.

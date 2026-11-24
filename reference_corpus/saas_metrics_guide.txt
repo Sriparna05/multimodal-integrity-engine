@@ -1,0 +1,10 @@
+TITLE: Modern B2B SaaS Benchmarks: Unit Economics, Capital Efficiency, and Net Retention
+
+SECTION 1: THE CORE SAAS GROWTH ENGINE
+Sustainable software-as-a-service scalability requires rigorous balance between customer acquisition cost (CAC) payback periods and customer lifetime value (LTV). Best-in-class enterprise software companies target CAC payback intervals under fourteen months on a fully loaded sales and marketing expense basis.
+
+SECTION 2: NET RETENTION AND EXPANSION LEVERS
+Net Revenue Retention (NRR) above one hundred and twenty percent distinguishes top-quartile cloud platforms. Achieving strong NRR demands consumption-based pricing tiers, proactive customer success interventions, and cross-selling ancillary feature modules before renewal milestones.
+
+SECTION 3: THE RULE OF 40 IN TIGHT CAPITAL MARKETS
+In periods of elevated cost of capital, public markets reward software companies that satisfy the Rule of 40—where annual revenue growth rate plus free cash flow margin exceeds forty percent. Balancing disciplined headcount growth with automated customer onboarding enables companies to preserve positive free cash flow while capturing market share.

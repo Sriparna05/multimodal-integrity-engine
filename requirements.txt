@@ -1,0 +1,13 @@
+pymupdf
+python-docx
+faster-whisper
+imageio-ffmpeg
+sentence-transformers
+faiss-cpu
+transformers
+torch
+numpy
+scikit-learn
+reportlab
+edge-tts
+tqdm
