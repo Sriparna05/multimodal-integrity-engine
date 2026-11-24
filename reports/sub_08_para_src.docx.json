@@ -1,0 +1,44 @@
+{
+  "document_id": "sub_08_para_src.docx",
+  "file_path": "D:\\integrity-engine\\sample_submissions\\sub_08_para_src.docx",
+  "modality": "docx",
+  "status": "ok",
+  "total_integrity_risk": "HIGH",
+  "scores": {
+    "peer_similarity_percentage": 50.0,
+    "external_similarity_percentage": 0.0,
+    "ai_generated_probability": 25.8
+  },
+  "boilerplate_chunks_discounted": 0,
+  "peer_matches": [
+    {
+      "matched_file": "sub_09_para_dup.docx",
+      "similarity_score": 0.882,
+      "query_passage": "Vertical SaaS platforms are uniquely positioned to embed credit underwriting solutions directly into merchant daily workflows. By analyzing continuous real-time point-of-sale transaction telemetry and inventory turnover rates rather than static quarterly balance sheets, vertical software providers can offer working capital advances with substantially reduced default probabilities. This tight product integration minimizes customer acquisition costs and transforms standard software platforms into indispensable operating infrastructure for small enterprises.",
+      "matched_passage": "Vertical software platforms are exceptionally positioned to integrate commercial credit solutions directly into merchant operational workflows. By evaluating real-time point-of-sale sales data and inventory turnover rates instead of static historical financial statements, vertical software vendors can provide working capital loans with significantly lower default risk. This seamless product integration reduces customer acquisition expenses and turns ordinary software systems into essential operating infrastructure for small businesses.",
+      "location": {
+        "query_page": 1,
+        "query_timestamp": null,
+        "matched_page": 1,
+        "matched_timestamp": null
+      }
+    },
+    {
+      "matched_file": "sub_09_para_dup.docx",
+      "similarity_score": 0.896,
+      "query_passage": "However, shifting from an asset-light subscription revenue model to an embedded balance-sheet lending structure exposes enterprise software firms to severe macroeconomic interest rate volatility. Without sophisticated debt facility securitization and programmatic loan-loss reserve protocols, unexpected spikes in merchant delinquency can rapidly decimate operational cash reserves and undermine primary enterprise valuations.",
+      "matched_passage": "However, transitioning from an asset-light subscription model to balance-sheet loan origination exposes enterprise software companies to significant macroeconomic interest rate fluctuations. In the absence of structured credit facility securitization and automated loan loss reserve protocols, unexpected surges in merchant defaults can quickly deplete cash reserves and erode primary company valuations.",
+      "location": {
+        "query_page": 1,
+        "query_timestamp": null,
+        "matched_page": 1,
+        "matched_timestamp": null
+      }
+    }
+  ],
+  "multimodal_matches": [],
+  "external_matches": [],
+  "explanations": [
+    "Detected 2 text-to-text peer plagiarism match(es) against sub_09_para_dup.docx (peak cosine similarity: 0.896)."
+  ]
+}

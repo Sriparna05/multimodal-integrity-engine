@@ -1,0 +1,427 @@
+[
+  {
+    "document_id": "sub_01_orig.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_01_orig.pdf",
+    "modality": "pdf",
+    "status": "ok",
+    "total_integrity_risk": "LOW",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 42.8
+    },
+    "boilerplate_chunks_discounted": 1,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores."
+    ]
+  },
+  {
+    "document_id": "sub_02_orig.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_02_orig.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "LOW",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 10.0
+    },
+    "boilerplate_chunks_discounted": 1,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores."
+    ]
+  },
+  {
+    "document_id": "sub_03_orig.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_03_orig.pdf",
+    "modality": "pdf",
+    "status": "ok",
+    "total_integrity_risk": "LOW",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 10.0
+    },
+    "boilerplate_chunks_discounted": 1,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores."
+    ]
+  },
+  {
+    "document_id": "sub_04_orig.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_04_orig.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "LOW",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 1,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores."
+    ]
+  },
+  {
+    "document_id": "sub_05_orig.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_05_orig.pdf",
+    "modality": "pdf",
+    "status": "ok",
+    "total_integrity_risk": "MEDIUM",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 33.3,
+      "ai_generated_probability": 36.0
+    },
+    "boilerplate_chunks_discounted": 1,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [
+      {
+        "matched_file": "ev_battery_supply_chain.txt",
+        "similarity_score": 0.969,
+        "query_passage": "The critical path for next-generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery-grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed-loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-two supplier delivery bottlenecks.",
+        "matched_passage": "TITLE: Global Electric Vehicle Battery Supply Chain Resilience & Mineral Refining Economics SECTION 1: UPSTREAM EXTRACTION AND CHEMICAL CONVERSION The critical path for next-generation electric vehicle adoption depends heavily on stabilizing the upstream refining throughput of battery-grade lithium hydroxide and nickel sulfate. While raw spodumene extraction has expanded across Australia and South America, chemical conversion remains geographically concentrated in East Asian coastal industrial zones. Developing domestic hydrometallurgical refining hubs requires significant capital expenditure, prolonged environmental permitting cycles, and specialized chemical engineering expertise. Until regional supply chains establish closed-loop battery recycling pipelines that recover cathode black mass at commercial scale, automotive original equipment manufacturers must navigate volatile feedstock pricing, geopolitical export controls, and tier-two supplier delivery bottlenecks.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "explanations": [
+      "Filtered out 1 boilerplate prompt/guideline chunk(s) prior to calculating plagiarism scores.",
+      "External corpus overlap detected with ev_battery_supply_chain.txt (1 chunk(s), peak similarity: 0.969)."
+    ]
+  },
+  {
+    "document_id": "sub_06_copy_src.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_06_copy_src.pdf",
+    "modality": "pdf",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 50.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [
+      {
+        "matched_file": "sub_07_copy_dup.docx",
+        "similarity_score": 1.0,
+        "query_passage": "Advanced packaging technologies, notably Chip-on-Wafer-on-Substrate (CoWoS) and high-density 2.5D interposers, have transitioned from niche high-performance computing options into the primary operational bottleneck for modern generative accelerator manufacturing. Front-end wafer lithography at sub-three-nanometer nodes yields negligible commercial utility if die interconnect density cannot overcome memory-bandwidth wall constraints. Foundry operators are consequently diverting capital allocation from pure substrate fabrication toward localized advanced packaging cleanrooms and thermal dissipation testing facilities.",
+        "matched_passage": "Advanced packaging technologies, notably Chip-on-Wafer-on-Substrate (CoWoS) and high-density 2.5D interposers, have transitioned from niche high-performance computing options into the primary operational bottleneck for modern generative accelerator manufacturing. Front-end wafer lithography at sub-three-nanometer nodes yields negligible commercial utility if die interconnect density cannot overcome memory-bandwidth wall constraints. Foundry operators are consequently diverting capital allocation from pure substrate fabrication toward localized advanced packaging cleanrooms and thermal dissipation testing facilities.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      },
+      {
+        "matched_file": "sub_07_copy_dup.docx",
+        "similarity_score": 1.0,
+        "query_passage": "The extreme capital intensity of next-generation extreme ultraviolet (EUV) lithography systems creates insurmountable barriers to entry for late-stage foundry contenders. Amortizing multi-billion dollar cleanroom tooling requires sustained utilization rates exceeding ninety percent, alongside multi-year anchor tenant purchase commitments from hyper-scaler clients. When cyclical semiconductor demand dips, foundries without diversified product lines across automotive and industrial microcontrollers face catastrophic margin erosion under fixed depreciation burdens.",
+        "matched_passage": "The extreme capital intensity of next-generation extreme ultraviolet (EUV) lithography systems creates insurmountable barriers to entry for late-stage foundry contenders. Amortizing multi-billion dollar cleanroom tooling requires sustained utilization rates exceeding ninety percent, alongside multi-year anchor tenant purchase commitments from hyper-scaler clients. When cyclical semiconductor demand dips, foundries without diversified product lines across automotive and industrial microcontrollers face catastrophic margin erosion under fixed depreciation burdens.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Detected 2 text-to-text peer plagiarism match(es) against sub_07_copy_dup.docx (peak cosine similarity: 1.000)."
+    ]
+  },
+  {
+    "document_id": "sub_07_copy_dup.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_07_copy_dup.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 50.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [
+      {
+        "matched_file": "sub_06_copy_src.pdf",
+        "similarity_score": 1.0,
+        "query_passage": "Advanced packaging technologies, notably Chip-on-Wafer-on-Substrate (CoWoS) and high-density 2.5D interposers, have transitioned from niche high-performance computing options into the primary operational bottleneck for modern generative accelerator manufacturing. Front-end wafer lithography at sub-three-nanometer nodes yields negligible commercial utility if die interconnect density cannot overcome memory-bandwidth wall constraints. Foundry operators are consequently diverting capital allocation from pure substrate fabrication toward localized advanced packaging cleanrooms and thermal dissipation testing facilities.",
+        "matched_passage": "Advanced packaging technologies, notably Chip-on-Wafer-on-Substrate (CoWoS) and high-density 2.5D interposers, have transitioned from niche high-performance computing options into the primary operational bottleneck for modern generative accelerator manufacturing. Front-end wafer lithography at sub-three-nanometer nodes yields negligible commercial utility if die interconnect density cannot overcome memory-bandwidth wall constraints. Foundry operators are consequently diverting capital allocation from pure substrate fabrication toward localized advanced packaging cleanrooms and thermal dissipation testing facilities.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      },
+      {
+        "matched_file": "sub_06_copy_src.pdf",
+        "similarity_score": 1.0,
+        "query_passage": "The extreme capital intensity of next-generation extreme ultraviolet (EUV) lithography systems creates insurmountable barriers to entry for late-stage foundry contenders. Amortizing multi-billion dollar cleanroom tooling requires sustained utilization rates exceeding ninety percent, alongside multi-year anchor tenant purchase commitments from hyper-scaler clients. When cyclical semiconductor demand dips, foundries without diversified product lines across automotive and industrial microcontrollers face catastrophic margin erosion under fixed depreciation burdens.",
+        "matched_passage": "The extreme capital intensity of next-generation extreme ultraviolet (EUV) lithography systems creates insurmountable barriers to entry for late-stage foundry contenders. Amortizing multi-billion dollar cleanroom tooling requires sustained utilization rates exceeding ninety percent, alongside multi-year anchor tenant purchase commitments from hyper-scaler clients. When cyclical semiconductor demand dips, foundries without diversified product lines across automotive and industrial microcontrollers face catastrophic margin erosion under fixed depreciation burdens.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Detected 2 text-to-text peer plagiarism match(es) against sub_06_copy_src.pdf (peak cosine similarity: 1.000)."
+    ]
+  },
+  {
+    "document_id": "sub_08_para_src.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_08_para_src.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 50.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 25.8
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [
+      {
+        "matched_file": "sub_09_para_dup.docx",
+        "similarity_score": 0.882,
+        "query_passage": "Vertical SaaS platforms are uniquely positioned to embed credit underwriting solutions directly into merchant daily workflows. By analyzing continuous real-time point-of-sale transaction telemetry and inventory turnover rates rather than static quarterly balance sheets, vertical software providers can offer working capital advances with substantially reduced default probabilities. This tight product integration minimizes customer acquisition costs and transforms standard software platforms into indispensable operating infrastructure for small enterprises.",
+        "matched_passage": "Vertical software platforms are exceptionally positioned to integrate commercial credit solutions directly into merchant operational workflows. By evaluating real-time point-of-sale sales data and inventory turnover rates instead of static historical financial statements, vertical software vendors can provide working capital loans with significantly lower default risk. This seamless product integration reduces customer acquisition expenses and turns ordinary software systems into essential operating infrastructure for small businesses.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      },
+      {
+        "matched_file": "sub_09_para_dup.docx",
+        "similarity_score": 0.896,
+        "query_passage": "However, shifting from an asset-light subscription revenue model to an embedded balance-sheet lending structure exposes enterprise software firms to severe macroeconomic interest rate volatility. Without sophisticated debt facility securitization and programmatic loan-loss reserve protocols, unexpected spikes in merchant delinquency can rapidly decimate operational cash reserves and undermine primary enterprise valuations.",
+        "matched_passage": "However, transitioning from an asset-light subscription model to balance-sheet loan origination exposes enterprise software companies to significant macroeconomic interest rate fluctuations. In the absence of structured credit facility securitization and automated loan loss reserve protocols, unexpected surges in merchant defaults can quickly deplete cash reserves and erode primary company valuations.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Detected 2 text-to-text peer plagiarism match(es) against sub_09_para_dup.docx (peak cosine similarity: 0.896)."
+    ]
+  },
+  {
+    "document_id": "sub_09_para_dup.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_09_para_dup.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 50.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [
+      {
+        "matched_file": "sub_08_para_src.docx",
+        "similarity_score": 0.882,
+        "query_passage": "Vertical software platforms are exceptionally positioned to integrate commercial credit solutions directly into merchant operational workflows. By evaluating real-time point-of-sale sales data and inventory turnover rates instead of static historical financial statements, vertical software vendors can provide working capital loans with significantly lower default risk. This seamless product integration reduces customer acquisition expenses and turns ordinary software systems into essential operating infrastructure for small businesses.",
+        "matched_passage": "Vertical SaaS platforms are uniquely positioned to embed credit underwriting solutions directly into merchant daily workflows. By analyzing continuous real-time point-of-sale transaction telemetry and inventory turnover rates rather than static quarterly balance sheets, vertical software providers can offer working capital advances with substantially reduced default probabilities. This tight product integration minimizes customer acquisition costs and transforms standard software platforms into indispensable operating infrastructure for small enterprises.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      },
+      {
+        "matched_file": "sub_08_para_src.docx",
+        "similarity_score": 0.896,
+        "query_passage": "However, transitioning from an asset-light subscription model to balance-sheet loan origination exposes enterprise software companies to significant macroeconomic interest rate fluctuations. In the absence of structured credit facility securitization and automated loan loss reserve protocols, unexpected surges in merchant defaults can quickly deplete cash reserves and erode primary company valuations.",
+        "matched_passage": "However, shifting from an asset-light subscription revenue model to an embedded balance-sheet lending structure exposes enterprise software firms to severe macroeconomic interest rate volatility. Without sophisticated debt facility securitization and programmatic loan-loss reserve protocols, unexpected spikes in merchant delinquency can rapidly decimate operational cash reserves and undermine primary enterprise valuations.",
+        "location": {
+          "query_page": 1,
+          "query_timestamp": null,
+          "matched_page": 1,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Detected 2 text-to-text peer plagiarism match(es) against sub_08_para_src.docx (peak cosine similarity: 0.896)."
+    ]
+  },
+  {
+    "document_id": "sub_10_pitch_src.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_10_pitch_src.pdf",
+    "modality": "pdf",
+    "status": "ok",
+    "total_integrity_risk": "MEDIUM",
+    "scores": {
+      "peer_similarity_percentage": 25.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [
+      {
+        "matched_file": "sub_11_pitch_video.mp4",
+        "similarity_score": 0.95,
+        "query_passage": "Our pro forma financial model projects reaching operating break-even by month eighteen, underpinned by an average order value expansion to forty-two dollars. We anticipate blended gross margins will stabilize at sixty-four percent as centralized procurement volumes lower unit hardware costs. Net working capital requirements will peak during the third fiscal quarter before stabilizing alongside sustained free cash flow.",
+        "matched_passage": "Our pro-forma financial model projects reaching operating break even by month 18, underpinned by an average order value expansion to $42. We anticipate blended gross margins will stabilize at 64% as centralized procurement volumes lower unit hardware costs. Networking capital requirements will peak during the third fiscal quarter before stabilizing alongside sustained free cash flow.",
+        "location": {
+          "query_page": 2,
+          "query_timestamp": null,
+          "matched_page": null,
+          "matched_timestamp": "00:00:00-00:00:31"
+        }
+      }
+    ],
+    "external_matches": [],
+    "explanations": [
+      "Cross-modal match identified against sub_11_pitch_video.mp4 (spoken audio/text alignment score: 0.950)."
+    ]
+  },
+  {
+    "document_id": "sub_11_pitch_video.mp4",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_11_pitch_video.mp4",
+    "modality": "mp4",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 100.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [
+      {
+        "matched_file": "sub_10_pitch_src.pdf",
+        "similarity_score": 0.95,
+        "query_passage": "Our pro-forma financial model projects reaching operating break even by month 18, underpinned by an average order value expansion to $42. We anticipate blended gross margins will stabilize at 64% as centralized procurement volumes lower unit hardware costs. Networking capital requirements will peak during the third fiscal quarter before stabilizing alongside sustained free cash flow.",
+        "matched_passage": "Our pro forma financial model projects reaching operating break-even by month eighteen, underpinned by an average order value expansion to forty-two dollars. We anticipate blended gross margins will stabilize at sixty-four percent as centralized procurement volumes lower unit hardware costs. Net working capital requirements will peak during the third fiscal quarter before stabilizing alongside sustained free cash flow.",
+        "location": {
+          "query_page": null,
+          "query_timestamp": "00:00:00-00:00:31",
+          "matched_page": 2,
+          "matched_timestamp": null
+        }
+      }
+    ],
+    "external_matches": [],
+    "explanations": [
+      "Cross-modal match identified against sub_10_pitch_src.pdf (spoken audio/text alignment score: 0.950)."
+    ]
+  },
+  {
+    "document_id": "sub_12_orig_video.mp4",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_12_orig_video.mp4",
+    "modality": "mp4",
+    "status": "ok",
+    "total_integrity_risk": "LOW",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 20.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Document exhibits high originality with no anomalous peer or external overlaps."
+    ]
+  },
+  {
+    "document_id": "sub_13_ai_gen.docx",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_13_ai_gen.docx",
+    "modality": "docx",
+    "status": "ok",
+    "total_integrity_risk": "HIGH",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 95.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "High AI generation probability (95.0%): Exhibits formulaic transition patterns and uniform syntactic sentence structure."
+    ]
+  },
+  {
+    "document_id": "sub_14_corrupted.pdf",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_14_corrupted.pdf",
+    "modality": "pdf",
+    "status": "error",
+    "total_integrity_risk": "UNPROCESSED",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 0.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Document flagged as ERROR: PDF file is empty (0 bytes): sub_14_corrupted.pdf"
+    ]
+  },
+  {
+    "document_id": "sub_15_silent_video.mp4",
+    "file_path": "D:\\integrity-engine\\sample_submissions\\sub_15_silent_video.mp4",
+    "modality": "mp4",
+    "status": "warning",
+    "total_integrity_risk": "UNPROCESSED",
+    "scores": {
+      "peer_similarity_percentage": 0.0,
+      "external_similarity_percentage": 0.0,
+      "ai_generated_probability": 0.0
+    },
+    "boilerplate_chunks_discounted": 0,
+    "peer_matches": [],
+    "multimodal_matches": [],
+    "external_matches": [],
+    "explanations": [
+      "Document flagged as WARNING: Video has no audio track or is completely silent: sub_15_silent_video.mp4"
+    ]
+  }
+]
