@@ -7,6 +7,81 @@ import unicodedata
 from src.models import TextChunk
 
 
+_TENS_MAP = {
+    "twenty": 20,
+    "thirty": 30,
+    "forty": 40,
+    "fifty": 50,
+    "sixty": 60,
+    "seventy": 70,
+    "eighty": 80,
+    "ninety": 90,
+}
+
+_UNITS_MAP = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+}
+
+_SMALL_NUMBERS_MAP = {
+    "zero": "0",
+    "two": "2",
+    "three": "3",
+    "four": "4",
+    "five": "5",
+    "six": "6",
+    "seven": "7",
+    "eight": "8",
+    "nine": "9",
+    "ten": "10",
+    "eleven": "11",
+    "twelve": "12",
+    "thirteen": "13",
+    "fourteen": "14",
+    "fifteen": "15",
+    "sixteen": "16",
+    "seventeen": "17",
+    "eighteen": "18",
+    "nineteen": "19",
+    **{k: str(v) for k, v in _TENS_MAP.items()},
+}
+
+_COMPOUND_NUM_RE = re.compile(
+    r"\b(" + "|".join(_TENS_MAP.keys()) + r")[-\s]+(" + "|".join(_UNITS_MAP.keys()) + r")\b",
+    flags=re.IGNORECASE,
+)
+_SMALL_NUM_RE = re.compile(
+    r"\b(" + "|".join(_SMALL_NUMBERS_MAP.keys()) + r")\b",
+    flags=re.IGNORECASE,
+)
+
+
+def normalize_spoken_written(text: str) -> str:
+    """Normalizes common spoken-vs-written mismatches (numbers, percentages, hyphenation)."""
+    # 1. Compound spelled-out numbers (e.g., "forty-two" -> "42", "sixty-four" -> "64")
+    text = _COMPOUND_NUM_RE.sub(
+        lambda m: str(_TENS_MAP[m.group(1).lower()] + _UNITS_MAP[m.group(2).lower()]),
+        text,
+    )
+    # 2. Standalone spelled-out numbers (e.g., "eighteen" -> "18")
+    text = _SMALL_NUM_RE.sub(
+        lambda m: _SMALL_NUMBERS_MAP[m.group(1).lower()],
+        text,
+    )
+    # 3. Spelled-out percentages (e.g., "64 percent" -> "64%")
+    text = re.sub(r"\b(\d+(?:\.\d+)?)\s+percent\b", r"\1%", text, flags=re.IGNORECASE)
+    # 4. Intra-word hyphenation between letters (e.g., "pro-forma" -> "pro forma")
+    text = re.sub(r"(?<=[A-Za-z])-(?=[A-Za-z])", " ", text)
+    return text
+
+
 def clean_text(text: str) -> str:
     """Normalizes whitespace/unicode and strips standalone page markers/headers.
 
@@ -35,7 +110,8 @@ def clean_text(text: str) -> str:
     for p in raw_paragraphs:
         # Replace single newline with space within a paragraph
         p_flat = re.sub(r"\s*\n\s*", " ", p)
-        # Collapse multiple horizontal whitespace
+        # Normalize spoken-vs-written mismatches and collapse horizontal whitespace
+        p_flat = normalize_spoken_written(p_flat)
         p_flat = re.sub(r"[ \t]+", " ", p_flat).strip()
         if p_flat:
             cleaned_paragraphs.append(p_flat)
@@ -83,22 +159,17 @@ def chunk_document(
         return []
 
     # Coalesce trivial heading-only paragraphs (< 18 words) with the subsequent paragraph
-    # unless it is a metadata header block
     coalesced: list[str] = []
     idx = 0
     while idx < len(raw_paragraphs):
         p = raw_paragraphs[idx]
         p_words = len(p.split())
 
-        # If it's a short heading and there is a next paragraph that is not a metadata block
-        is_metadata = "METADATA & GUIDELINES" in p or "Case Competition Prompt" in p
-        if p_words < 18 and (idx + 1) < len(raw_paragraphs) and not is_metadata:
+        if p_words < 18 and (idx + 1) < len(raw_paragraphs):
             next_p = raw_paragraphs[idx + 1]
-            next_is_metadata = "METADATA & GUIDELINES" in next_p or "Case Competition Prompt" in next_p
-            if not next_is_metadata:
-                coalesced.append(f"{p} {next_p}")
-                idx += 2
-                continue
+            coalesced.append(f"{p} {next_p}")
+            idx += 2
+            continue
         coalesced.append(p)
         idx += 1
 

@@ -19,11 +19,28 @@ def format_risk_badge(risk: str) -> str:
         return "UNPROCESSED"
 
 
+def _sanitize_report_for_json(report_data: dict[str, Any]) -> dict[str, Any]:
+    """Ensures relative filenames only and emits explanations as a joined string."""
+    sanitized = dict(report_data)
+    if sanitized.get("file_path"):
+        sanitized["file_path"] = Path(sanitized["file_path"]).name
+
+    raw_exp = sanitized.get("explanations", [])
+    if isinstance(raw_exp, list):
+        sanitized["explanation_details"] = raw_exp
+        sanitized["explanations"] = " ".join(raw_exp)
+    elif isinstance(raw_exp, str):
+        sanitized.setdefault("explanation_details", [raw_exp] if raw_exp else [])
+
+    return sanitized
+
+
 def generate_document_json(report_data: dict[str, Any], output_path: Path) -> None:
     """Writes the standardized JSON report for a single document."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    sanitized = _sanitize_report_for_json(report_data)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(report_data, f, indent=2)
+        json.dump(sanitized, f, indent=2)
 
 
 def generate_document_markdown(report_data: dict[str, Any], output_path: Path) -> None:
@@ -35,10 +52,12 @@ def generate_document_markdown(report_data: dict[str, Any], output_path: Path) -
     risk = report_data["total_integrity_risk"]
     scores = report_data.get("scores", {})
     peer_pct = scores.get("peer_similarity_percentage", 0.0)
+    mm_pct = scores.get("multimodal_similarity_percentage", 0.0)
     ext_pct = scores.get("external_similarity_percentage", 0.0)
     ai_prob = scores.get("ai_generated_probability", 0.0)
     discounted = report_data.get("boilerplate_chunks_discounted", 0)
-    explanations = report_data.get("explanations", [])
+    raw_exp = report_data.get("explanation_details") or report_data.get("explanations", [])
+    explanations = [raw_exp] if isinstance(raw_exp, str) else raw_exp
 
     lines = [
         f"# Integrity Audit Report: `{doc_id}`",
@@ -50,6 +69,7 @@ def generate_document_markdown(report_data: dict[str, Any], output_path: Path) -
         "| Evaluation Metric | Score | Assessment Tier | Benchmark Thresholds |",
         "| :--- | :---: | :---: | :--- |",
         f"| **Peer Similarity** | **{peer_pct:.1f}%** | {'High' if peer_pct>=40 else 'Medium' if peer_pct>=20 else 'Low'} | Low < 20.0% ≤ Med < 40.0% ≤ High |",
+        f"| **Cross-Modal Similarity** | **{mm_pct:.1f}%** | {'High' if mm_pct>=40 else 'Medium' if mm_pct>=20 else 'Low'} | Low < 20.0% ≤ Med < 40.0% ≤ High (or match ≥ 0.85) |",
         f"| **External Reference Match** | **{ext_pct:.1f}%** | {'High' if ext_pct>=40 else 'Medium' if ext_pct>=20 else 'Low'} | Low < 20.0% ≤ Med < 40.0% ≤ High |",
         f"| **AI Generation Probability** | **{ai_prob:.1f}%** | {'High' if ai_prob>=75 else 'Medium' if ai_prob>=50 else 'Low'} | Low < 50.0% ≤ Med < 75.0% ≤ High |",
         f"| **Discounted Boilerplate Chunks** | **{discounted}** | Neutralized | Stripped shared tournament header |",
@@ -151,8 +171,9 @@ def generate_summary_matrix(reports: list[dict[str, Any]], output_dir: Path) -> 
 
     # 1. summary_matrix.json
     matrix_json_path = output_dir / "summary_matrix.json"
+    sanitized_reports = [_sanitize_report_for_json(r) for r in reports]
     with open(matrix_json_path, "w", encoding="utf-8") as f:
-        json.dump(reports, f, indent=2)
+        json.dump(sanitized_reports, f, indent=2)
 
     # 2. summary_matrix.md
     matrix_md_path = output_dir / "summary_matrix.md"
@@ -161,8 +182,8 @@ def generate_summary_matrix(reports: list[dict[str, Any]], output_dir: Path) -> 
         "",
         f"**Total Documents Evaluated**: {len(reports)}",
         "",
-        "| Document | Status | Risk Level | Peer Sim (%) | Ext Sim (%) | AI Prob (%) | Boilerplate Filtered | Flagged Sources |",
-        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |",
+        "| Document | Status | Risk Level | Peer Sim (%) | Multimodal Sim (%) | Ext Sim (%) | AI Prob (%) | Boilerplate Filtered | Flagged Sources |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |",
     ]
 
     for r in reports:
@@ -171,6 +192,7 @@ def generate_summary_matrix(reports: list[dict[str, Any]], output_dir: Path) -> 
         risk = r["total_integrity_risk"]
         scores = r.get("scores", {})
         peer_pct = scores.get("peer_similarity_percentage", 0.0)
+        mm_pct = scores.get("multimodal_similarity_percentage", 0.0)
         ext_pct = scores.get("external_similarity_percentage", 0.0)
         ai_prob = scores.get("ai_generated_probability", 0.0)
         discounted = r.get("boilerplate_chunks_discounted", 0)
@@ -189,14 +211,14 @@ def generate_summary_matrix(reports: list[dict[str, Any]], output_dir: Path) -> 
 
         lines.append(
             f"| `{doc_id}` | {status.upper()} | {format_risk_badge(risk)} | "
-            f"{peer_pct:.1f}% | {ext_pct:.1f}% | {ai_prob:.1f}% | {discounted} | {flagged_str} |"
+            f"{peer_pct:.1f}% | {mm_pct:.1f}% | {ext_pct:.1f}% | {ai_prob:.1f}% | {discounted} | {flagged_str} |"
         )
 
     lines.extend([
         "",
         "### Risk Categorization Policy",
-        "- **HIGH RISK**: Peer Similarity ≥ 40% OR External Similarity ≥ 40% OR AI Generation Likelihood ≥ 75%",
-        "- **MEDIUM RISK**: Peer Similarity ≥ 20% OR External Similarity ≥ 20% OR AI Generation Likelihood ≥ 50%",
+        "- **HIGH RISK**: Peer/Multimodal/External Similarity ≥ 40% OR Single Multimodal Match ≥ 0.85 OR AI Generation Likelihood ≥ 75%",
+        "- **MEDIUM RISK**: Peer/Multimodal/External Similarity ≥ 20% OR AI Generation Likelihood ≥ 50%",
         "- **LOW RISK**: Below medium threshold guidelines",
         "- **UNPROCESSED**: Corrupted or empty submission files",
         "",

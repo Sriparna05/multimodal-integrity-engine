@@ -34,14 +34,21 @@ def format_timestamp(seconds: float) -> str:
     return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 
-def get_whisper_model(model_size: str = "tiny.en") -> faster_whisper.WhisperModel:
-    """Returns a lazily-instantiated faster-whisper model."""
+def get_whisper_model(model_size: str = "base.en") -> faster_whisper.WhisperModel:
+    """Returns a lazily-instantiated faster-whisper model, falling back to tiny.en if needed."""
     global _WHISPER_MODEL
     if _WHISPER_MODEL is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         compute_type = "float16" if device == "cuda" else "int8"
-        logger.info(f"Loading Whisper model '{model_size}' on {device} ({compute_type})...")
-        _WHISPER_MODEL = faster_whisper.WhisperModel(model_size, device=device, compute_type=compute_type)
+        try:
+            logger.info(f"Loading Whisper model '{model_size}' on {device} ({compute_type})...")
+            _WHISPER_MODEL = faster_whisper.WhisperModel(model_size, device=device, compute_type=compute_type)
+        except Exception as exc:
+            if model_size != "tiny.en":
+                logger.warning(f"Failed to load Whisper '{model_size}': {exc}. Falling back to 'tiny.en'.")
+                _WHISPER_MODEL = faster_whisper.WhisperModel("tiny.en", device=device, compute_type=compute_type)
+            else:
+                raise
     return _WHISPER_MODEL
 
 
@@ -150,8 +157,16 @@ def extract_mp4(file_path: Path | str, document_id: Optional[str] = None) -> Doc
         )
 
     try:
-        model = get_whisper_model("tiny.en")
-        segments_gen, info = model.transcribe(audio_array, beam_size=5, language="en")
+        model = get_whisper_model("base.en")
+        segments_gen, info = model.transcribe(
+            audio_array,
+            beam_size=5,
+            language="en",
+            initial_prompt=(
+                "Business case pitch discussing financial models, pro forma margins, "
+                "working capital, and strategy."
+            ),
+        )
 
         collected_segments: list[dict] = []
         for s in segments_gen:

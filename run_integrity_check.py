@@ -137,26 +137,24 @@ def main() -> None:
     print("\n[5/5] Generating Audit Reports and Summary Matrix...")
     for rep in reports:
         doc_stem = Path(rep["document_id"]).stem
-        orig_filename = Path(rep.get("file_path", rep["document_id"])).name
         json_path = output_dir / f"{doc_stem}_report.json"
         md_path = output_dir / f"{doc_stem}_report.md"
         generate_document_json(rep, json_path)
         generate_document_markdown(rep, md_path)
 
-        # Also emit <filename>.json (e.g. sub_10_pitch_src.pdf.json) for direct browsing
-        if orig_filename and orig_filename != f"{doc_stem}_report.json":
-            generate_document_json(rep, output_dir / f"{orig_filename}.json")
-
     generate_summary_matrix(reports, output_dir)
     print(f"  Reports generated cleanly in: {output_dir}")
 
     # Terminal Summary Table
-    print("\n" + "=" * 105)
+    print("\n" + "=" * 116)
     print("INTEGRITY ASSESSMENT SUMMARY TABLE")
-    print("=" * 105)
-    header = f"{'Document':<24} | {'Status':<7} | {'Risk':<11} | {'Peer Sim':<8} | {'Ext Sim':<8} | {'AI Prob':<8} | {'Boilerplate'}"
+    print("=" * 116)
+    header = (
+        f"{'Document':<24} | {'Status':<7} | {'Risk':<11} | {'Peer Sim':<8} | "
+        f"{'MM Sim':<8} | {'Ext Sim':<8} | {'AI Prob':<8} | {'Boilerplate'}"
+    )
     print(header)
-    print("-" * 105)
+    print("-" * 116)
     for r in reports:
         sc = r.get("scores", {})
         print(
@@ -164,11 +162,12 @@ def main() -> None:
             f"{r['status'].upper():<7} | "
             f"{r['total_integrity_risk']:<11} | "
             f"{sc.get('peer_similarity_percentage', 0.0):>7.1f}% | "
+            f"{sc.get('multimodal_similarity_percentage', 0.0):>7.1f}% | "
             f"{sc.get('external_similarity_percentage', 0.0):>7.1f}% | "
             f"{sc.get('ai_generated_probability', 0.0):>7.1f}% | "
             f"{r.get('boilerplate_chunks_discounted', 0):>6} discounted"
         )
-    print("=" * 105)
+    print("=" * 116)
     print(f"\nAudit complete! Review reports at: {output_dir / 'summary_matrix.md'}")
 
 

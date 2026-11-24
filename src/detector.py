@@ -2,6 +2,7 @@
 
 import logging
 import os
+from pathlib import Path
 import re
 from typing import Optional
 
@@ -92,27 +93,43 @@ def calculate_ai_probability(text: str) -> float:
     elif std_len < 8.0:
         heuristic_score += 10.0
 
-    # 3. Optional HF classifier blend
-    hf_score = None
+    # 3. Run Hugging Face classifier whenever available
+    hf_score: Optional[float] = None
     classifier = get_hf_ai_classifier()
     if classifier is not None:
         try:
-            # Truncate to first 450 words to fit model context window
-            sample_text = " ".join(text.split()[:450])
-            preds = classifier(sample_text)
-            if preds and isinstance(preds, list):
-                top_pred = preds[0]
-                label = top_pred.get("label", "").lower()
-                conf = float(top_pred.get("score", 0.0))
-                if "chatgpt" in label or "ai" in label or "fake" in label:
-                    hf_score = conf * 100.0
-                elif "human" in label:
-                    hf_score = (1.0 - conf) * 100.0
+            # Truncate to first 350 words (~450 subword tokens) to fit model context window
+            sample_text = " ".join(text.split()[:350])
+            preds = classifier(sample_text, top_k=None, truncation=True, max_length=512)
+            score_list = preds[0] if (preds and isinstance(preds[0], list)) else preds
+            if isinstance(score_list, list):
+                label_scores = {
+                    item.get("label", "").lower(): float(item.get("score", 0.0))
+                    for item in score_list
+                    if isinstance(item, dict)
+                }
+                for ai_key in ("chatgpt", "ai", "fake", "machine", "label_1"):
+                    for lbl, sc in label_scores.items():
+                        if ai_key in lbl:
+                            hf_score = sc * 100.0
+                            break
+                    if hf_score is not None:
+                        break
+                if hf_score is None:
+                    for human_key in ("human", "real", "label_0"):
+                        for lbl, sc in label_scores.items():
+                            if human_key in lbl:
+                                hf_score = (1.0 - sc) * 100.0
+                                break
+                        if hf_score is not None:
+                            break
+                if hf_score is None and label_scores:
+                    logger.warning(f"Unexpected HF AI classifier labels: {list(label_scores.keys())}")
         except Exception as exc:
             logger.debug(f"HF classification skipped: {exc}")
 
-    if hf_score is not None and heuristic_score >= 60.0:
-        final_score = max(heuristic_score, 0.4 * hf_score + 0.6 * heuristic_score)
+    if hf_score is not None:
+        final_score = max(hf_score, heuristic_score)
     else:
         final_score = heuristic_score
 
@@ -126,8 +143,9 @@ def detect_boilerplate_chunks(
 ) -> set[str]:
     """Identifies common template chunks across documents (Scenario 4).
 
-    Any chunk with cosine similarity >= 0.90 in at least 4 different documents
-    (or >= 35% of valid corpus documents) is flagged as boilerplate.
+    Any chunk with cosine similarity >= 0.90 in at least min_doc_count other
+    documents is flagged as boilerplate, with a guard preventing 100% discounting
+    of any single valid document.
     """
     boilerplate_ids: set[str] = set()
     num_valid_docs = len(valid_documents)
@@ -141,13 +159,25 @@ def detect_boilerplate_chunks(
         matches = peer_index.search(chunk, top_k=min(25, len(peer_index.chunks)))
         matching_docs = set()
         for matched_chunk, score in matches:
+            if matched_chunk.document_id == chunk.document_id:
+                continue
             if score >= similarity_threshold:
                 matching_docs.add(matched_chunk.document_id)
 
-        # If present in at least min_doc_count different documents or >= 35% of corpus
-        ratio = len(matching_docs) / num_valid_docs
-        if len(matching_docs) >= 4 or ratio >= 0.35:
+        matching_docs.discard(chunk.document_id)
+
+        if len(matching_docs) >= min_doc_count:
             boilerplate_ids.add(chunk.chunk_id)
+
+    # Safety guard: never allow boilerplate filtering to wipe out 100% of chunks in a valid document
+    for doc in valid_documents:
+        doc_chunk_ids = {c.chunk_id for c in doc.chunks}
+        if doc_chunk_ids and doc_chunk_ids.issubset(boilerplate_ids):
+            logger.warning(
+                f"Boilerplate filter would discount 100% of chunks in '{doc.document_id}'; "
+                "skipping boilerplate discounting for this document."
+            )
+            boilerplate_ids -= doc_chunk_ids
 
     logger.info(f"Identified {len(boilerplate_ids)} boilerplate chunks across corpus.")
     return boilerplate_ids
@@ -183,6 +213,7 @@ def analyze_document(
     external_index: VectorIndex,
     boilerplate_ids: set[str],
     similarity_threshold: float = 0.75,
+    multimodal_threshold: float = 0.70,
 ) -> dict:
     """Performs multi-signal integrity evaluation for a single document.
 
@@ -194,17 +225,20 @@ def analyze_document(
       - AI-generated probability
       - Total integrity risk rating & natural-language explanations
     """
+    rel_file_path = Path(doc.file_path).name if doc.file_path else doc.document_id
+
     # Handle corrupted or empty documents gracefully
     if doc.status != "ok" or not doc.chunks:
         explanation = doc.error_message or "File corrupted, unreadable, or empty."
         return {
             "document_id": doc.document_id,
-            "file_path": doc.file_path,
+            "file_path": rel_file_path,
             "modality": doc.modality,
             "status": doc.status,
             "total_integrity_risk": "UNPROCESSED",
             "scores": {
                 "peer_similarity_percentage": 0.0,
+                "multimodal_similarity_percentage": 0.0,
                 "external_similarity_percentage": 0.0,
                 "ai_generated_probability": 0.0,
             },
@@ -225,13 +259,16 @@ def analyze_document(
     external_matches = []
 
     peer_matched_chunk_ids = set()
+    multimodal_matched_chunk_ids = set()
     external_matched_chunk_ids = set()
 
     for chunk in active_chunks:
-        # 1. Search peer index (exclude self and boilerplate)
+        # 1. Search peer index (exclude self and boilerplate), separating text-to-text and multimodal
         peer_results = peer_index.search(chunk, top_k=10)
-        best_peer_match = None
-        best_peer_score = 0.0
+        best_text_match = None
+        best_text_score = 0.0
+        best_mm_match = None
+        best_mm_score = 0.0
 
         for matched_chunk, score in peer_results:
             if matched_chunk.document_id == doc.document_id:
@@ -239,26 +276,32 @@ def analyze_document(
             if matched_chunk.chunk_id in boilerplate_ids:
                 continue
 
-            if score >= similarity_threshold and score > best_peer_score:
-                best_peer_score = score
-                best_peer_match = matched_chunk
-
-        if best_peer_match is not None:
-            match_dict = make_match_dict(chunk, best_peer_match, best_peer_score)
-            is_multimodal = chunk.modality == "mp4" or best_peer_match.modality == "mp4"
+            is_multimodal = chunk.modality == "mp4" or matched_chunk.modality == "mp4"
             if is_multimodal:
-                multimodal_matches.append(match_dict)
+                if score >= multimodal_threshold and score > best_mm_score:
+                    best_mm_score = score
+                    best_mm_match = matched_chunk
             else:
-                peer_matches.append(match_dict)
+                if score >= similarity_threshold and score > best_text_score:
+                    best_text_score = score
+                    best_text_match = matched_chunk
+
+        if best_text_match is not None:
+            peer_matches.append(make_match_dict(chunk, best_text_match, best_text_score))
             peer_matched_chunk_ids.add(chunk.chunk_id)
+
+        if best_mm_match is not None:
+            multimodal_matches.append(make_match_dict(chunk, best_mm_match, best_mm_score))
+            multimodal_matched_chunk_ids.add(chunk.chunk_id)
 
         # 2. Search external reference index
         ext_results = external_index.search(chunk, top_k=5)
+        ext_thresh = multimodal_threshold if chunk.modality == "mp4" else similarity_threshold
         best_ext_match = None
         best_ext_score = 0.0
 
         for matched_ref, score in ext_results:
-            if score >= similarity_threshold and score > best_ext_score:
+            if score >= ext_thresh and score > best_ext_score:
                 best_ext_score = score
                 best_ext_match = matched_ref
 
@@ -271,19 +314,33 @@ def analyze_document(
     total_active = len(active_chunks)
     if total_active > 0:
         peer_sim_pct = round((len(peer_matched_chunk_ids) / total_active) * 100.0, 1)
+        mm_sim_pct = round((len(multimodal_matched_chunk_ids) / total_active) * 100.0, 1)
         ext_sim_pct = round((len(external_matched_chunk_ids) / total_active) * 100.0, 1)
     else:
         peer_sim_pct = 0.0
+        mm_sim_pct = 0.0
         ext_sim_pct = 0.0
 
     # 3. AI Generated Probability on non-boilerplate text
     non_boilerplate_text = "\n\n".join(c.text for c in active_chunks)
     ai_prob = calculate_ai_probability(non_boilerplate_text)
 
-    # 4. Determine overall risk level
-    if peer_sim_pct >= 40.0 or ext_sim_pct >= 40.0 or ai_prob >= 75.0:
+    # 4. Determine overall risk level with explicit cross-modal gating
+    max_mm_score = max((m["similarity_score"] for m in multimodal_matches), default=0.0)
+    if (
+        peer_sim_pct >= 40.0
+        or mm_sim_pct >= 40.0
+        or max_mm_score >= 0.85
+        or ext_sim_pct >= 40.0
+        or ai_prob >= 75.0
+    ):
         total_risk = "HIGH"
-    elif peer_sim_pct >= 20.0 or ext_sim_pct >= 20.0 or ai_prob >= 50.0:
+    elif (
+        peer_sim_pct >= 20.0
+        or mm_sim_pct >= 20.0
+        or ext_sim_pct >= 20.0
+        or ai_prob >= 50.0
+    ):
         total_risk = "MEDIUM"
     else:
         total_risk = "LOW"
@@ -306,10 +363,9 @@ def analyze_document(
 
     if multimodal_matches:
         mm_sources = sorted(list({m['matched_file'] for m in multimodal_matches}))
-        max_mm_sim = max(m['similarity_score'] for m in multimodal_matches)
         explanations.append(
             f"Cross-modal match identified against {', '.join(mm_sources)} "
-            f"(spoken audio/text alignment score: {max_mm_sim:.3f})."
+            f"(spoken audio/text alignment score: {max_mm_score:.3f})."
         )
 
     if external_matches:
@@ -336,12 +392,13 @@ def analyze_document(
 
     return {
         "document_id": doc.document_id,
-        "file_path": doc.file_path,
+        "file_path": rel_file_path,
         "modality": doc.modality,
         "status": doc.status,
         "total_integrity_risk": total_risk,
         "scores": {
             "peer_similarity_percentage": peer_sim_pct,
+            "multimodal_similarity_percentage": mm_sim_pct,
             "external_similarity_percentage": ext_sim_pct,
             "ai_generated_probability": ai_prob,
         },
